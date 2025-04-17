@@ -1,0 +1,1 @@
+float gc(char *seq, int raw);
