@@ -22,8 +22,8 @@ load_fasta(char *file)
 	char **name = NULL;
 	char **seq = NULL;
         char cmd[500] = "gzcat -cf \"";
-        strlcat(cmd, file,  sizeof(cmd));
-        strlcat(cmd, "\"",  sizeof(cmd));
+        strncat(cmd, file,  sizeof(cmd) - 1);
+        strncat(cmd, "\"",  sizeof(cmd) - 1);
 	/* Find file size to figure out required buffer size */
 	f = popen(cmd, "r");
         if (f == NULL) return NULL;
