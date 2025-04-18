@@ -10,6 +10,11 @@ int
 main (int argc, char **argv)
 {
   int tot = 0;
+  unsigned long  tlen = 0;
+  unsigned long maxlen = 0;
+  unsigned long minlen = 0;
+  unsigned long meanlen;
+  double tgc = 0;
   char *arg;
   char *infilename;
 
@@ -29,11 +34,28 @@ main (int argc, char **argv)
   }
   if (infilename != NULL) {
     struct fasta_file *seqs = load_fasta(infilename);
-    if (!tot) {
-      for(int i = 0; i < seqs->n_contigs; i++) {
-        printf("%10s %7lu (GC %3.2f%%)\n", seqs->name[i], strlen(seqs->seq[i]),
-               100*gc(seqs->seq[i], 0));
+    for(int i = 0; i < seqs->n_contigs; i++) {
+      if (!tot) {
+        printf("%10s\t%7lu\t(GC %3.2f%%)\n", get_first_word(seqs->name[i]), 
+               strlen(seqs->seq[i]), 100*gc(seqs->seq[i], 0));
       }
+      else {
+        tlen += strlen(seqs->seq[i]);
+        tgc += gc(seqs->seq[i], 1);
+        if (minlen <  strlen(seqs->seq[i]) || minlen == 0) {
+          minlen =  strlen(seqs->seq[i]);
+        }
+        if (strlen(seqs->seq[i]) > maxlen) {
+          maxlen = strlen(seqs->seq[i]); 
+        }
+      }
+    }
+    if (tot) {
+      tgc = tgc / tlen;
+      meanlen = tlen / seqs->n_contigs;
+      printf("%6d contigs\tminlen: %-7lu\tmaxlen: %-7lu\tmeanlen: %-7lu\t(GC %3.2f%%)\n",
+             seqs->n_contigs, minlen, maxlen, meanlen, 100*tgc);
+
     }
     del_fasta(seqs);
   }
