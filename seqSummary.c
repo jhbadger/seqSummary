@@ -16,7 +16,7 @@ main (int argc, char **argv)
   unsigned long meanlen;
   double tgc = 0;
   char *arg;
-  char *infilename;
+  char *infilename = NULL;
 
   if (argc < 3)			/* need at least FASTA file */
     usage (argv[0]);
@@ -42,7 +42,7 @@ main (int argc, char **argv)
       else {
         tlen += strlen(seqs->seq[i]);
         tgc += gc(seqs->seq[i], 1);
-        if (minlen <  strlen(seqs->seq[i]) || minlen == 0) {
+        if (minlen >  strlen(seqs->seq[i]) || minlen == 0) {
           minlen =  strlen(seqs->seq[i]);
         }
         if (strlen(seqs->seq[i]) > maxlen) {
